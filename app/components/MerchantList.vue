@@ -3,16 +3,16 @@
     <pre
       dir="ltr"
       wrap="hard"
-      v-text="JSON.stringify(products, null, 2)"
+      v-text="JSON.stringify(merchants, null, 2)"
       class="text-xs"
     />
   </div>
 </template>
 
 <script setup lang="ts">
-import { type ProductListItem } from '~/composables/products'
+import type { Merchant } from '~/composables/merchants'
 
 defineProps<{
-  products: ProductListItem[]
+  merchants: Merchant[]
 }>()
 </script>

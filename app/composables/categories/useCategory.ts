@@ -16,6 +16,7 @@ export const useCategory = () => {
         }
       },
       {
+        lazy: true,
         server: true,
         default: () => [],
       }

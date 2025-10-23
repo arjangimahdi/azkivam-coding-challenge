@@ -9,35 +9,4 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { useApi } from '~/composables/useApi'
-
-interface Merchant {
-  id: number
-  name: string
-}
-
-const api = useApi()
-
-const {
-  data: merchants,
-  pending,
-  error,
-} = useAsyncData<Merchant[]>(
-  'merchants',
-  async () => {
-    try {
-      const response = await api.get<{ data: Merchant[] }>('/merchants')
-      return response.data.data
-    } catch (err: any) {
-      throw createError({
-        statusCode: 500,
-        statusMessage: `Failed to fetch merchants: ${err.message}`,
-      })
-    }
-  },
-  {
-    server: true,
-  }
-)
-</script>
+<script setup lang="ts"></script>

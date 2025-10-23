@@ -13,3 +13,13 @@ export function getProducts(
     query,
   })
 }
+
+export function getProductsByCategoryId(
+  body: ProductListRequestBody,
+  query: ProductListRequestQuery,
+  categoryId: number
+) {
+  return useApi().post<ProductListResponse>(`/products/${categoryId}`, body, {
+    query,
+  })
+}

@@ -1,4 +1,9 @@
-import { type ProductListItem, getProducts, transformProductList } from '.'
+import {
+  type ProductListItem,
+  getProducts,
+  transformProductList,
+  getProductsByCategoryId,
+} from '.'
 
 export const useProduct = () => {
   const pageIndex = ref(1)
@@ -27,6 +32,39 @@ export const useProduct = () => {
         }
       },
       {
+        lazy: true,
+        server: true,
+        default: () => [],
+        transform: transformProductList,
+      }
+    )
+  }
+
+  const fetchProductsByCategoryId = (categoryId: number) => {
+    return useAsyncData<ProductListItem[]>(
+      `products-by-category-${categoryId}`,
+      async () => {
+        try {
+          const response = await getProductsByCategoryId(
+            {
+              merchantIds: [],
+            },
+            {
+              page: pageIndex.value,
+              size: pageSize.value,
+            },
+            categoryId
+          )
+          return response.data.data
+        } catch (err: any) {
+          throw createError({
+            statusCode: 500,
+            statusMessage: `خطا در دریافت محصولات:\n${err.message}\n${err.response.data.message}`,
+          })
+        }
+      },
+      {
+        lazy: true,
         server: true,
         default: () => [],
         transform: transformProductList,
@@ -36,5 +74,6 @@ export const useProduct = () => {
 
   return {
     fetchProducts,
+    fetchProductsByCategoryId,
   }
 }

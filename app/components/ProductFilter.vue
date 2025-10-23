@@ -4,15 +4,15 @@
       dir="ltr"
       wrap="hard"
       v-text="JSON.stringify(categories, null, 2)"
-      class="p-4 text-xs"
+      class="text-xs"
     />
   </div>
 </template>
 
 <script setup lang="ts">
-import { useCategory } from '~/composables/categories'
+import type { NestedCategory } from '~/composables/categories'
 
-const { fetchCategories } = useCategory()
-
-const { data: categories } = fetchCategories()
+defineProps<{
+  categories: NestedCategory[]
+}>()
 </script>
