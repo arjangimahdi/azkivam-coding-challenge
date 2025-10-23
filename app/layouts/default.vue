@@ -1,5 +1,5 @@
 <template>
-  <main class="w-full bg-zinc-200 p-4">
+  <main class="min-h-fit max-w-7xl mx-auto">
     <NuxtPage />
   </main>
 </template>

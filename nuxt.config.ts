@@ -1,13 +1,28 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
-  extends: ['./layers/ui'],
+  app: {
+    head: {
+      htmlAttrs: {
+        dir: 'rtl' as const,
+        lang: 'fa',
+      },
+      meta: [
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        { charset: 'utf-8' },
+        { 'http-equiv': 'X-UA-Compatible', content: 'IE=edge' },
+        { name: 'format-detection', content: 'telephone=no' },
+        { name: 'theme-color', content: '#ffffff' },
+        { name: 'msapplication-TileColor', content: '#ffffff' },
+      ],
+    },
+  },
+  css: ['~/assets/styles.css'],
   modules: ['@nuxt/eslint', '@nuxt/icon', '@nuxt/image', '@nuxtjs/tailwindcss'],
   runtimeConfig: {
     public: {
-      apiBaseUrl: 'https://interview-api.azkivam.com/api/v1/',
-      apiTimeout: '10000',
+      apiBaseUrl: process.env.API_BASE_URL,
+      apiTimeout: process.env.API_TIMEOUT,
     },
   },
 })

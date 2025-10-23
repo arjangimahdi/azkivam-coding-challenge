@@ -27,6 +27,7 @@
   },
   "packageManager": "pnpm@8.15.3+sha1.64838798f519c18029c1e8a1310e16101fc2eda0",
   "devDependencies": {
+    "@types/node": "^24.9.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
     "prettier": "^3.6.2"

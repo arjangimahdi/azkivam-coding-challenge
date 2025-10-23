@@ -3,7 +3,7 @@ import type {
   RequestOptions,
   ApiResponse,
   ApiClient,
-} from '../../types/api'
+} from '~/types/api'
 
 export const useApi = (config: ApiConfig = {}): ApiClient => {
   const runtimeConfig = useRuntimeConfig()
