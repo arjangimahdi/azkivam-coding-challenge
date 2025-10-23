@@ -3,9 +3,18 @@
     <div
       dir="ltr"
       class="col-span-2 h-fit bg-zinc-50 ring-1 ring-zinc-300 rounded-lg sticky top-6 z-10 p-4"
-    ></div>
-    <div class="col-span-5 bg-zinc-50 ring-1 ring-zinc-300 rounded-lg">
-      <Suspense v-if="!pending && !error">
+    >
+      <Suspense>
+        <template #fallback>
+          <div class="p-4 text-xs">Loading...</div>
+        </template>
+        <template #default>
+          <ProductFilter />
+        </template>
+      </Suspense>
+    </div>
+    <div class="col-span-5 h-fit bg-zinc-50 ring-1 ring-zinc-300 rounded-lg">
+      <Suspense>
         <template #fallback>
           <div class="p-4 text-xs">Loading...</div>
         </template>
@@ -13,9 +22,6 @@
           <ProductWrapper :products="products" />
         </template>
       </Suspense>
-      <div v-else>
-        <div class="p-4 text-xs">Loading...</div>
-      </div>
     </div>
   </div>
 </template>

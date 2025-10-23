@@ -1,9 +1,8 @@
 <template>
-  <div class="">
+  <div>
     <pre
       dir="ltr"
       wrap="hard"
-      v-if="products"
       v-text="JSON.stringify(products, null, 2)"
       class="p-4 text-xs"
     />
