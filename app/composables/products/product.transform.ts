@@ -1,8 +1,9 @@
 import type { ProductListItem } from '.'
-
-export function transformProductList(products: ProductListItem[]) {
+export function transformProductList(
+  products: ProductListItem[]
+): ProductListItem[] {
   return products.map(product => ({
     ...product,
-    min: currencyDivider(product.minPrice),
+    minPrice: currencyDivider(product.minPrice as number),
   }))
 }

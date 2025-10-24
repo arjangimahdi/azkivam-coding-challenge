@@ -4,7 +4,7 @@ export interface ProductListItem {
   slug: string
   available: boolean
   categoryId: number
-  minPrice: number
+  minPrice: string | number
   imageUrl: string
 }
 

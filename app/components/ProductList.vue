@@ -1,0 +1,31 @@
+<template>
+  <div class="w-full h-full">
+    <div
+      class="grid xl:grid-cols-4 lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-px items-stretch"
+    >
+      <ProductCard
+        v-for="product in products"
+        :key="product.id"
+        :product="product"
+      />
+
+      <ProductCardSkeleton
+        v-if="isLoading"
+        v-for="i in DEFAULT_PAGE_SIZE"
+        :key="`loader-${i}`"
+      />
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { DEFAULT_PAGE_SIZE } from '~/constants'
+import { type ProductListItem } from '~/composables/products'
+
+const props = defineProps<{
+  products: ProductListItem[]
+  isLoading: boolean
+}>()
+
+const { products, isLoading } = toRefs(props)
+</script>

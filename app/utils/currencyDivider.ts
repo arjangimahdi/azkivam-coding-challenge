@@ -1,3 +1,3 @@
-export function currencyDivider(amount: number) {
-  return amount.toLocaleString('fa-IR')
+export function currencyDivider(amount: number): string {
+  return amount.toLocaleString('fa-IR') + ' تومان'
 }

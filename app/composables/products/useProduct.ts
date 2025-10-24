@@ -1,15 +1,14 @@
-import {
-  type ProductListItem,
-  getProducts,
-  transformProductList,
-  getProductsByCategoryId,
-} from '.'
+import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from '~/constants'
+import { getProducts, transformProductList, type ProductListItem } from '.'
 
 export const useProduct = () => {
-  const pageIndex = ref(1)
-  const pageSize = ref(4)
+  const pageIndex = ref(DEFAULT_PAGE_INDEX)
+  const pageSize = DEFAULT_PAGE_SIZE
+  const isLoadingMore = ref(false)
+  const reachedEnd = ref(false)
+  const products = useState<ProductListItem[]>('products', () => [])
 
-  const fetchProducts = () => {
+  const fetchProducts = async () => {
     return useAsyncData<ProductListItem[]>(
       'products',
       async () => {
@@ -20,10 +19,11 @@ export const useProduct = () => {
             },
             {
               page: pageIndex.value,
-              size: pageSize.value,
+              size: pageSize,
             }
           )
-          return response.data.data
+          products.value = transformProductList(response.data.data)
+          return products.value
         } catch (err: any) {
           throw createError({
             statusCode: 500,
@@ -35,45 +35,38 @@ export const useProduct = () => {
         lazy: true,
         server: true,
         default: () => [],
-        transform: transformProductList,
       }
     )
   }
 
-  const fetchProductsByCategoryId = (categoryId: number) => {
-    return useAsyncData<ProductListItem[]>(
-      `products-by-category-${categoryId}`,
-      async () => {
-        try {
-          const response = await getProductsByCategoryId(
-            {
-              merchantIds: [],
-            },
-            {
-              page: pageIndex.value,
-              size: pageSize.value,
-            },
-            categoryId
-          )
-          return response.data.data
-        } catch (err: any) {
-          throw createError({
-            statusCode: 500,
-            statusMessage: `خطا در دریافت محصولات:\n${err.message}\n${err.response.data.message}`,
-          })
-        }
-      },
-      {
-        lazy: true,
-        server: true,
-        default: () => [],
-        transform: transformProductList,
-      }
-    )
+  const hasMore = computed(() => {
+    return !reachedEnd.value && products.value.length > 0
+  })
+
+  const loadMore = async () => {
+    if (isLoadingMore.value || !hasMore.value) return
+
+    isLoadingMore.value = true
+
+    try {
+      pageIndex.value += 1
+      const resp = await getProducts(
+        { merchantIds: [] },
+        { page: pageIndex.value, size: pageSize }
+      )
+      const newItems = transformProductList(resp.data.data)
+      if (newItems.length < pageSize) reachedEnd.value = true
+      products.value = [...products.value, ...newItems]
+    } finally {
+      isLoadingMore.value = false
+    }
   }
 
   return {
     fetchProducts,
-    fetchProductsByCategoryId,
+    products,
+    isLoadingMore,
+    reachedEnd,
+    loadMore,
   }
 }
