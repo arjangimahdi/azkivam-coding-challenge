@@ -8,7 +8,6 @@ body {
 }
 
 @layer utilities {
-  /* Custom scrollbar utility (works in WebKit and Firefox) */
   .scrollbar-custom {
     scrollbar-width: thin; /* Firefox */
     scrollbar-color: theme('colors.slate.400') transparent; /* Firefox */
@@ -25,8 +24,8 @@ body {
 
   .scrollbar-custom::-webkit-scrollbar-thumb {
     background-color: theme('colors.slate.300');
-    border-radius: 9999px; /* fully rounded */
-    border: 1px solid transparent; /* creates padding around thumb */
+    border-radius: 9999px;
+    border: 1px solid transparent;
     background-clip: content-box;
   }
 
