@@ -1,4 +1,5 @@
 export * from './useProduct'
+export * from './useProductByCategory'
 
 export * from './types.d'
 

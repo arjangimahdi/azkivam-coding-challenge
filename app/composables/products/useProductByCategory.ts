@@ -1,39 +1,38 @@
-import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from '~/constants'
-import { getProducts, transformProductList, type ProductListItem } from '.'
 import { useMerchant } from '../merchants'
+import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from '~/constants'
+import {
+  getProductsByCategoryId,
+  transformProductList,
+  type ProductListItem,
+} from '.'
 
-export const useProduct = () => {
+export const useProductByCategory = (categoryId: number) => {
   const { merchantIds } = useMerchant()
 
-  const stateKey = 'products'
+  const stateKey = `products_category_${categoryId}`
 
-  const totalItems = useState<number>('totalItems', () => 0)
   const products = useState<ProductListItem[]>(stateKey, () => [])
+  const totalItems = useState<number>('totalItems', () => 0)
 
   const pageIndex = ref(DEFAULT_PAGE_INDEX)
   const pageSize = DEFAULT_PAGE_SIZE
   const isLoadingMore = ref(false)
   const reachedEnd = ref(false)
 
-  const hasMore = computed(
-    () => !reachedEnd.value && products.value.length < totalItems.value
-  )
-
-  const fetchProducts = async () => {
+  const fetchProductsByCategory = async () => {
     return useAsyncData<ProductListItem[]>(
       stateKey,
       async () => {
-        isLoadingMore.value = true
-
         try {
-          const response = await getProducts(
+          const response = await getProductsByCategoryId(
             {
               merchantIds: merchantIds.value,
             },
             {
               page: pageIndex.value,
               size: pageSize,
-            }
+            },
+            categoryId
           )
           products.value = transformProductList(response.data.data)
           totalItems.value = response.data.totalItems
@@ -41,10 +40,8 @@ export const useProduct = () => {
         } catch (err: any) {
           throw createError({
             statusCode: 500,
-            statusMessage: `خطا در دریافت محصولات:\n${err.message}\n${err.response.data.message}`,
+            statusMessage: `خطا در دریافت محصولات دسته بندی:\n${err.message}\n${err.response?.data?.message ?? ''}`,
           })
-        } finally {
-          isLoadingMore.value = false
         }
       },
       {
@@ -56,6 +53,10 @@ export const useProduct = () => {
     )
   }
 
+  const hasMore = computed(() => {
+    return !reachedEnd.value && products.value.length < totalItems.value
+  })
+
   const loadMore = async () => {
     if (isLoadingMore.value || !hasMore.value) return
 
@@ -63,9 +64,10 @@ export const useProduct = () => {
 
     try {
       pageIndex.value += 1
-      const resp = await getProducts(
+      const resp = await getProductsByCategoryId(
         { merchantIds: merchantIds.value },
-        { page: pageIndex.value, size: pageSize }
+        { page: pageIndex.value, size: pageSize },
+        categoryId
       )
       const newItems = transformProductList(resp.data.data)
       if (newItems.length < pageSize) reachedEnd.value = true
@@ -86,7 +88,7 @@ export const useProduct = () => {
   )
 
   return {
-    fetchProducts,
+    fetchProductsByCategory,
     products,
     isLoadingMore,
     reachedEnd,
