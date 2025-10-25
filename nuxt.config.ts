@@ -25,6 +25,7 @@ export default defineNuxtConfig({
     '@nuxtjs/tailwindcss',
     '@vueuse/nuxt',
   ],
+  image: {},
   runtimeConfig: {
     public: {
       apiBaseUrl: process.env.API_BASE_URL,

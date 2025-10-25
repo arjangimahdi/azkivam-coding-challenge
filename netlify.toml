@@ -1,0 +1,7 @@
+[images]
+  remote_images = [
+    "https://ghestchy\\.ir/.*",
+    "https://meghdadit\\.com/.*"
+  ]
+
+
