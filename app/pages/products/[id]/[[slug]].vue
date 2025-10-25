@@ -1,15 +1,6 @@
 <template>
   <div class="min-h-screen grid grid-cols-7 p-6 gap-x-6">
-    <div
-      class="col-span-2 h-fit bg-zinc-50 ring-1 ring-zinc-300 rounded-lg sticky top-6 z-10 p-4"
-    >
-      <h4 class="text-base font-medium mb-3">فیلتر ها</h4>
-      <CategoryList :categories="categories" v-if="!categoriesPending" />
-      <CategoryListSkeleton v-else />
-      <hr class="my-4" />
-      <MerchantList :merchants="merchants" v-if="!merchantsPending" />
-      <MerchantListSkeleton v-else />
-    </div>
+    <Filters />
     <div
       class="col-span-5 h-fit bg-zinc-50 ring-1 ring-zinc-300 rounded-lg overflow-hidden"
     >
@@ -21,9 +12,7 @@
 <script setup lang="ts">
 import { useInfiniteScroll } from '@vueuse/core'
 
-import { ProductList } from '~/components/products'
-import { CategoryListSkeleton, CategoryList } from '~/components/categories'
-import { MerchantListSkeleton, MerchantList } from '~/components/merchants'
+import { ProductList, Filters } from '~/components/products'
 
 import { useProductByCategory } from '~/composables/products'
 import { useCategory } from '~/composables/categories'

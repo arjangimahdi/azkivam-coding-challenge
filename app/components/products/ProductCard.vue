@@ -6,8 +6,8 @@
     <NuxtImg
       class="aspect-square object-cover"
       :alt="product.name"
-      :src="product.imageUrl"
-      placeholder="https://placehold.co/600x400/EEE/31343C?font=lora&text=Product"
+      :src="imgSrc"
+      @error="onImgError"
     />
 
     <div class="p-3 flex flex-col justify-between h-full">
@@ -28,7 +28,22 @@
 <script setup lang="ts">
 import { type ProductListItem } from '~/composables/products'
 
-defineProps<{
-  product: ProductListItem
-}>()
+const props = defineProps<{ product: ProductListItem }>()
+
+const fallbackSrc =
+  'https://placehold.co/600x400/EEE/31343C?font=lora&text=No+Image'
+const imgSrc = ref(props.product.imageUrl)
+
+watch(
+  () => props.product.imageUrl,
+  value => {
+    imgSrc.value = value
+  }
+)
+
+function onImgError() {
+  if (imgSrc.value !== fallbackSrc) {
+    imgSrc.value = fallbackSrc
+  }
+}
 </script>
