@@ -12,23 +12,32 @@
 <script setup lang="ts">
 import { useInfiniteScroll } from '@vueuse/core'
 
-import { useProduct } from '~/composables/products'
+import { ProductList, Filters } from '~/components/products'
+
+import { useProductByCategory } from '~/composables/products'
 import { useCategory } from '~/composables/categories'
 import { useMerchant } from '~/composables/merchants'
 
-import { ProductList, Filters } from '~/components/products'
+const route = useRoute()
+const categoryId = computed(() => Number(route.params.id))
 
 const { fetchCategories } = useCategory()
 const { fetchMerchants } = useMerchant()
-const { fetchProducts, products, isLoadingMore, loadMore } = useProduct()
+const { fetchProductsByCategory, products, isLoadingMore, loadMore } =
+  useProductByCategory(categoryId.value)
 
 const { data: categories, pending: categoriesPending } = fetchCategories()
 const { data: merchants, pending: merchantsPending } = fetchMerchants()
-fetchProducts()
+
+fetchProductsByCategory()
 
 onMounted(() => {
   if (window) {
     useInfiniteScroll(window, loadMore, { distance: 0 })
   }
+})
+
+watch(categoryId, () => {
+  fetchProductsByCategory()
 })
 </script>

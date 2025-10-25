@@ -1,6 +1,10 @@
-// @ts-check
 import withNuxt from './.nuxt/eslint.config.mjs'
 
-export default withNuxt(
-  // Your custom configs here
-)
+export default withNuxt({
+  plugins: {
+    prettier: require('eslint-plugin-prettier'),
+  },
+  rules: {
+    'prettier/prettier': 'error',
+  },
+})
