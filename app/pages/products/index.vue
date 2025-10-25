@@ -24,19 +24,18 @@ import { useInfiniteScroll } from '@vueuse/core'
 import { useProduct } from '~/composables/products'
 import { useCategory } from '~/composables/categories'
 import { useMerchant } from '~/composables/merchants'
-import ProductList from '~/components/ProductList.vue'
-import CategoryList from '~/components/CategoryList.vue'
-import MerchantList from '~/components/MerchantList.vue'
-import CategoryListSkeleton from '~/components/CategoryListSkeleton.vue'
-import MerchantListSkeleton from '~/components/MerchantListSkeleton.vue'
+
+import { ProductList } from '~/components/products'
+import { CategoryListSkeleton, CategoryList } from '~/components/categories'
+import { MerchantListSkeleton, MerchantList } from '~/components/merchants'
 
 const { fetchCategories } = useCategory()
 const { fetchMerchants } = useMerchant()
 const { fetchProducts, products, isLoadingMore, loadMore } = useProduct()
 
-fetchProducts()
 const { data: categories, pending: categoriesPending } = fetchCategories()
 const { data: merchants, pending: merchantsPending } = fetchMerchants()
+fetchProducts()
 
 onMounted(() => {
   if (window) {

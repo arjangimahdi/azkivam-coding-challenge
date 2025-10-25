@@ -25,8 +25,9 @@
 </template>
 
 <script setup lang="ts">
-import { DEFAULT_PAGE_SIZE } from '~/constants'
+import { ProductCard, ProductCardSkeleton } from '.'
 import { type ProductListItem } from '~/composables/products'
+import { DEFAULT_PAGE_SIZE } from '~/constants'
 
 const props = defineProps<{
   products: ProductListItem[]

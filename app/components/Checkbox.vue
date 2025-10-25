@@ -1,7 +1,6 @@
 <template>
   <label class="inline-flex items-center gap-x-2 select-none cursor-pointer">
     <input
-      ref="inputRef"
       type="checkbox"
       class="peer sr-only"
       :name="name"
@@ -26,11 +25,8 @@
 <script setup lang="ts">
 import type { CheckboxEmits, CheckboxProps } from '~/types/checkbox'
 
-const props = defineProps<CheckboxProps>()
+defineProps<CheckboxProps>()
 const emit = defineEmits<CheckboxEmits>()
 
 const model = defineModel<boolean>({ default: false })
-const inputRef = ref<HTMLInputElement | null>(null)
-
-const { label, disabled, name } = toRefs(props)
 </script>

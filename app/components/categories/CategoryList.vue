@@ -16,6 +16,7 @@
 </template>
 
 <script setup lang="ts">
+import { CategoryItem } from '.'
 import type { NestedCategory } from '~/composables/categories'
 
 defineProps<{

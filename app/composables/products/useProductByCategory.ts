@@ -1,3 +1,4 @@
+import { useMerchant } from '../merchants'
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from '~/constants'
 import {
   getProductsByCategoryId,
@@ -6,26 +7,18 @@ import {
 } from '.'
 
 export const useProductByCategory = (categoryId: number) => {
+  const { merchantIds } = useMerchant()
+
+  const stateKey = `products_category_${categoryId}`
+
+  const products = useState<ProductListItem[]>(stateKey, () => [])
+  const totalItems = useState<number>('totalItems', () => 0)
+
   const pageIndex = ref(DEFAULT_PAGE_INDEX)
   const pageSize = DEFAULT_PAGE_SIZE
   const isLoadingMore = ref(false)
   const reachedEnd = ref(false)
-  const stateKey = `products_category_${categoryId}`
-  const products = useState<ProductListItem[]>(stateKey, () => [])
-  const totalItems = useState<number>('totalItems', () => 0)
-  const route = useRoute()
-  const merchantIds = computed<number[]>(() => {
-    const q = route.query.merchantIds
-    if (!q) return []
-    if (Array.isArray(q))
-      return q.map(v => Number(v)).filter(n => Number.isFinite(n))
-    if (typeof q === 'string')
-      return q
-        .split(',')
-        .map(v => Number(v))
-        .filter(n => Number.isFinite(n))
-    return []
-  })
+
   const fetchProductsByCategory = async () => {
     return useAsyncData<ProductListItem[]>(
       stateKey,

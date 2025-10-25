@@ -1,31 +1,30 @@
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from '~/constants'
 import { getProducts, transformProductList, type ProductListItem } from '.'
+import { useMerchant } from '../merchants'
 
 export const useProduct = () => {
+  const { merchantIds } = useMerchant()
+
+  const stateKey = 'products'
+
+  const totalItems = useState<number>('totalItems', () => 0)
+  const products = useState<ProductListItem[]>(stateKey, () => [])
+
   const pageIndex = ref(DEFAULT_PAGE_INDEX)
   const pageSize = DEFAULT_PAGE_SIZE
   const isLoadingMore = ref(false)
   const reachedEnd = ref(false)
-  const totalItems = useState<number>('totalItems', () => 0)
-  const products = useState<ProductListItem[]>('products', () => [])
-  const route = useRoute()
-  const merchantIds = computed<number[]>(() => {
-    const q = route.query.merchantIds
-    if (!q) return []
-    if (Array.isArray(q))
-      return q.map(v => Number(v)).filter(n => Number.isFinite(n))
-    if (typeof q === 'string')
-      return q
-        .split(',')
-        .map(v => Number(v))
-        .filter(n => Number.isFinite(n))
-    return []
-  })
+
+  const hasMore = computed(
+    () => !reachedEnd.value && products.value.length < totalItems.value
+  )
 
   const fetchProducts = async () => {
     return useAsyncData<ProductListItem[]>(
-      'products',
+      stateKey,
       async () => {
+        isLoadingMore.value = true
+
         try {
           const response = await getProducts(
             {
@@ -44,6 +43,8 @@ export const useProduct = () => {
             statusCode: 500,
             statusMessage: `خطا در دریافت محصولات:\n${err.message}\n${err.response.data.message}`,
           })
+        } finally {
+          isLoadingMore.value = false
         }
       },
       {
@@ -54,11 +55,6 @@ export const useProduct = () => {
       }
     )
   }
-
-  const hasMore = computed(() => {
-    console.log(products.value.length, totalItems.value)
-    return !reachedEnd.value && products.value.length < totalItems.value
-  })
 
   const loadMore = async () => {
     if (isLoadingMore.value || !hasMore.value) return

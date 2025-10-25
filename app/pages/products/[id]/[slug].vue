@@ -21,11 +21,9 @@
 <script setup lang="ts">
 import { useInfiniteScroll } from '@vueuse/core'
 
-import ProductList from '~/components/ProductList.vue'
-import CategoryList from '~/components/CategoryList.vue'
-import MerchantList from '~/components/MerchantList.vue'
-import CategoryListSkeleton from '~/components/CategoryListSkeleton.vue'
-import MerchantListSkeleton from '~/components/MerchantListSkeleton.vue'
+import { ProductList } from '~/components/products'
+import { CategoryListSkeleton, CategoryList } from '~/components/categories'
+import { MerchantListSkeleton, MerchantList } from '~/components/merchants'
 
 import { useProductByCategory } from '~/composables/products'
 import { useCategory } from '~/composables/categories'
