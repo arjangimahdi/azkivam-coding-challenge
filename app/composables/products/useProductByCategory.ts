@@ -1,13 +1,18 @@
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from '~/constants'
-import { getProducts, transformProductList, type ProductListItem } from '.'
+import {
+  getProductsByCategoryId,
+  transformProductList,
+  type ProductListItem,
+} from '.'
 
-export const useProduct = () => {
+export const useProductByCategory = (categoryId: number) => {
   const pageIndex = ref(DEFAULT_PAGE_INDEX)
   const pageSize = DEFAULT_PAGE_SIZE
   const isLoadingMore = ref(false)
   const reachedEnd = ref(false)
+  const stateKey = `products_category_${categoryId}`
+  const products = useState<ProductListItem[]>(stateKey, () => [])
   const totalItems = useState<number>('totalItems', () => 0)
-  const products = useState<ProductListItem[]>('products', () => [])
   const route = useRoute()
   const merchantIds = computed<number[]>(() => {
     const q = route.query.merchantIds
@@ -21,20 +26,20 @@ export const useProduct = () => {
         .filter(n => Number.isFinite(n))
     return []
   })
-
-  const fetchProducts = async () => {
+  const fetchProductsByCategory = async () => {
     return useAsyncData<ProductListItem[]>(
-      'products',
+      stateKey,
       async () => {
         try {
-          const response = await getProducts(
+          const response = await getProductsByCategoryId(
             {
               merchantIds: merchantIds.value,
             },
             {
               page: pageIndex.value,
               size: pageSize,
-            }
+            },
+            categoryId
           )
           products.value = transformProductList(response.data.data)
           totalItems.value = response.data.totalItems
@@ -42,7 +47,7 @@ export const useProduct = () => {
         } catch (err: any) {
           throw createError({
             statusCode: 500,
-            statusMessage: `خطا در دریافت محصولات:\n${err.message}\n${err.response.data.message}`,
+            statusMessage: `خطا در دریافت محصولات دسته بندی:\n${err.message}\n${err.response?.data?.message ?? ''}`,
           })
         }
       },
@@ -56,7 +61,6 @@ export const useProduct = () => {
   }
 
   const hasMore = computed(() => {
-    console.log(products.value.length, totalItems.value)
     return !reachedEnd.value && products.value.length < totalItems.value
   })
 
@@ -67,9 +71,10 @@ export const useProduct = () => {
 
     try {
       pageIndex.value += 1
-      const resp = await getProducts(
+      const resp = await getProductsByCategoryId(
         { merchantIds: merchantIds.value },
-        { page: pageIndex.value, size: pageSize }
+        { page: pageIndex.value, size: pageSize },
+        categoryId
       )
       const newItems = transformProductList(resp.data.data)
       if (newItems.length < pageSize) reachedEnd.value = true
@@ -90,7 +95,7 @@ export const useProduct = () => {
   )
 
   return {
-    fetchProducts,
+    fetchProductsByCategory,
     products,
     isLoadingMore,
     reachedEnd,

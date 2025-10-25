@@ -3,11 +3,12 @@
     <div
       class="col-span-2 h-fit bg-zinc-50 ring-1 ring-zinc-300 rounded-lg sticky top-6 z-10 p-4"
     >
-      <ProductFilter :categories="categories" v-if="!categoriesPending" />
-      <div v-else class="p-4 text-xs">Loading...</div>
+      <h4 class="text-base font-medium mb-3">فیلتر ها</h4>
+      <CategoryList :categories="categories" v-if="!categoriesPending" />
+      <CategoryListSkeleton v-else />
       <hr class="my-4" />
       <MerchantList :merchants="merchants" v-if="!merchantsPending" />
-      <div v-else class="p-4 text-xs">Loading...</div>
+      <MerchantListSkeleton v-else />
     </div>
     <div
       class="col-span-5 h-fit bg-zinc-50 ring-1 ring-zinc-300 rounded-lg overflow-hidden"
@@ -23,18 +24,11 @@ import { useInfiniteScroll } from '@vueuse/core'
 import { useProduct } from '~/composables/products'
 import { useCategory } from '~/composables/categories'
 import { useMerchant } from '~/composables/merchants'
-
-const ProductList = defineAsyncComponent(
-  () => import('~/components/ProductList.vue')
-)
-
-const ProductFilter = defineAsyncComponent(
-  () => import('~/components/ProductFilter.vue')
-)
-
-const MerchantList = defineAsyncComponent(
-  () => import('~/components/MerchantList.vue')
-)
+import ProductList from '~/components/ProductList.vue'
+import CategoryList from '~/components/CategoryList.vue'
+import MerchantList from '~/components/MerchantList.vue'
+import CategoryListSkeleton from '~/components/CategoryListSkeleton.vue'
+import MerchantListSkeleton from '~/components/MerchantListSkeleton.vue'
 
 const { fetchCategories } = useCategory()
 const { fetchMerchants } = useMerchant()

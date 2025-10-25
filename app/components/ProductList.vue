@@ -15,6 +15,12 @@
         :key="`loader-${i}`"
       />
     </div>
+    <div
+      v-if="products.length === 0 && !isLoading"
+      class="text-center text-sm text-zinc-500 py-4"
+    >
+      محصولی یافت نشد
+    </div>
   </div>
 </template>
 
